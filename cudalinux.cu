@@ -55,18 +55,17 @@ int main() {
 
      cudaEventRecord(stop);
 
+     cudaEventSynchronize(stop);
+
 
     // Wait for GPU to finish before accessing on host
-    cudaDeviceSynchronize(stop);
+    cudaDeviceSynchronize();
 
-    / Calculate elapsed time in milliseconds
+    
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, start, stop);
 
-    // Convert milliseconds to microseconds
-    float microseconds = milliseconds * 1000;
-    printf("GPU Duration: %f us\n", microseconds);
-
+     printf("GPU Duration: %f ms\n", milliseconds);
 
     // Write the output to a binary file
     FILE *fp = fopen("cudaoutput.bin","wb");

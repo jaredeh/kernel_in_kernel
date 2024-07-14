@@ -37,7 +37,8 @@ int main() {
     }
     unsigned long long end = dtime_usec(start);
 
-    printf("CPU Duration: %llu us\n", end);
+    double duration_milliseconds = end / 1000.0;
+    printf("CPU Duration: %f milliseconds\n", duration_milliseconds);
 
     // write output to binary file
     FILE *fp = fopen("coutput.bin", "wb");

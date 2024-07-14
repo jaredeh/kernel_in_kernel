@@ -64,9 +64,7 @@ int main() {
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, start, stop);
 
-    // Convert milliseconds to microseconds
-    float microseconds = milliseconds * 1000;
-    printf("GPU Duration: %f us\n", microseconds);
+    printf("GPU Duration: %f ms\n", milliseconds);
 
     cudaMemcpy(c, d_c, N * sizeof(int), cudaMemcpyDeviceToHost);
 
