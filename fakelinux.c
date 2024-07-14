@@ -12,16 +12,6 @@ unsigned long long dtime_usec(unsigned long long start) {
 }
 
 
-void *fakefolio_init(struct fakefolio **fakefolios, unsigned long **output) {
-    *output = malloc(sizeof(unsigned long)*TOTAL_ENTRIES);
-    *fakefolios = malloc(sizeof(struct fakefolio)*TOTAL_ENTRIES);
-    memset(*fakefolios, 0, sizeof(struct fakefolio)*TOTAL_ENTRIES);
-    memset(*output, 0, sizeof(unsigned long)*TOTAL_ENTRIES);
-    for (int i = 0; i < TOTAL_ENTRIES; i++) {
-        (*fakefolios)[i].mapcount = i;
-    }    
-}
-
 int main() {
     struct fakefolio *fakefolios;
     unsigned long *output;
