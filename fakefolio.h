@@ -6,6 +6,6 @@ struct fakefolio {
 };
 
 
-#define TOTALRAM 128*1024*1024
+#define TOTALRAM 1024*1024*1024
 #define PAGE_SIZE 4
 #define TOTAL_ENTRIES (TOTALRAM/PAGE_SIZE)

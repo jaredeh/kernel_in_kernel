@@ -4,14 +4,20 @@
 #include <thread> // Include for std::this_thread::sleep_for
 #include <chrono>
 #include "fakefolio.h"
+#include <sys/time.h>
 
 
 // CUDA Kernel function to initialize the array elements
-__global__ void cudaKernel(struct fakefolio *fakefolios, unsigned long *output, int size) {
+__global__ void cudaKernel(struct fakefolio *fakefolios, unsigned long *output) {
     int idx = blockIdx.x*blockDim.x + threadIdx.x;
     output[idx] = fakefolios[idx].mapcount;
 }
 
+unsigned long long dtime_usec(unsigned long long start=0) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return ((tv.tv_sec * 1000000ULL) + tv.tv_usec) - start;
+}
 
 // // CUDA Kernel function to initialize the array elements
 // __global__ void cudaKernel(struct fakefolio *fakefolios, unsigned long *output, int size) {
@@ -36,13 +42,30 @@ int main() {
 
 
     // Launch kernel
-    int threadsPerBlock = 128;
+    int threadsPerBlock = 1024;
     int blocksPerGrid = (TOTAL_ENTRIES+threadsPerBlock-1)/threadsPerBlock;
+
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    cudaEventRecord(start);
+
     cudaKernel<<<blocksPerGrid, threadsPerBlock>>>(fakefolios, output);
+
+     cudaEventRecord(stop);
 
 
     // Wait for GPU to finish before accessing on host
-    cudaDeviceSynchronize();
+    cudaDeviceSynchronize(stop);
+
+    / Calculate elapsed time in milliseconds
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+
+    // Convert milliseconds to microseconds
+    float microseconds = milliseconds * 1000;
+    printf("GPU Duration: %f us\n", microseconds);
 
 
     // Write the output to a binary file
